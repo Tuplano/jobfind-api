@@ -37,6 +37,12 @@ class AuthService
             ]);
         }
 
+        if (! $user->hasVerifiedEmail()) {
+            throw ValidationException::withMessages([
+                'email' => ['Please verify your email address before logging in.'],
+            ]);
+        }
+
         if (! $user->is_active) {
             throw ValidationException::withMessages([
                 'email' => ['Your account has been deactivated.'],

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\Auth\VerifyEmailController;
 use App\Http\Controllers\Api\V1\Employee\ProfileController as EmployeeProfileController;
 use App\Http\Controllers\Api\V1\Employer\ProfileController as EmployerProfileController;
 use App\Http\Controllers\Api\V1\Jobs\ApplicationController;
@@ -20,6 +21,15 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login',    [AuthController::class, 'login'])->middleware('throttle:5,1');
+
+        // Email verification
+        Route::get('email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
+            ->middleware(['signed', 'throttle:6,1'])
+            ->name('verification.verify');
+
+        Route::post('email/resend', [VerifyEmailController::class, 'resend'])
+            ->middleware(['auth:sanctum', 'throttle:6,1'])
+            ->name('verification.send');
     });
 
     // Public job browsing

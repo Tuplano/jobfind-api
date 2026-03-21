@@ -25,11 +25,9 @@ class AuthService
         return $user;
     }
 
-    public function login(array $credentials, string $role): User
+    public function login(array $credentials): User
     {
-        $user = User::where('email', $credentials['email'])
-            ->where('role', $role)
-            ->first();
+        $user = User::where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([

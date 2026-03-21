@@ -55,19 +55,19 @@ class ApplicationService
         return $application->fresh();
     }
 
-    public function getForEmployee(User $employee)
+    public function getForEmployee(User $employee, int $perPage)
     {
         return Application::with(['jobListing.employer.employerProfile'])
             ->where('employee_id', $employee->id)
             ->latest()
-            ->paginate(15);
+            ->paginate($perPage);
     }
 
-    public function getForJob(Job $job)
+    public function getForJob(Job $job, int $perPage)
     {
         return Application::with(['employee.employeeProfile'])
             ->where('job_listing_id', $job->id)
             ->latest()
-            ->paginate(20);
+            ->paginate($perPage);
     }
 }

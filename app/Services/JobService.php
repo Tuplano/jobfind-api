@@ -5,12 +5,10 @@ namespace App\Services;
 use App\Enums\JobStatus;
 use App\Models\Job;
 use App\Models\User;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 
 class JobService
 {
-    public function listActive(array $filters = []): LengthAwarePaginator
+    public function listActive(array $filters = [], int $perPage = 15)
     {
         $query = Job::with(['employer.employerProfile', 'skills'])
             ->active();
@@ -39,15 +37,15 @@ class JobService
             $query->where('is_remote', $filters['is_remote']);
         }
 
-        return $query->latest()->paginate(15);
+        return $query->latest()->paginate($perPage);
     }
 
-    public function listForEmployer(User $employer): Collection
+    public function listForEmployer(User $employer, int $perPage)
     {
         return Job::with(['skills', 'applications'])
             ->where('employer_id', $employer->id)
             ->latest()
-            ->get();
+            ->paginate($perPage);
     }
 
     public function create(User $employer, array $data): Job

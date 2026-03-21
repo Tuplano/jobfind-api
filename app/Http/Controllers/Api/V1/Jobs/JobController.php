@@ -17,9 +17,10 @@ class JobController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $jobs = $this->jobService->listActive($request->only([
-            'search', 'type', 'experience_level', 'location', 'is_remote',
-        ]));
+        $jobs = $this->jobService->listActive(
+            $request->only(['search', 'type', 'experience_level', 'location', 'is_remote']),
+            (int) $request->get('per_page', 15)
+        );
 
         return response()->json(JobResource::collection($jobs)->response()->getData(true));
     }
@@ -64,8 +65,8 @@ class JobController extends Controller
 
     public function myJobs(Request $request): JsonResponse
     {
-        $jobs = $this->jobService->listForEmployer($request->user());
+        $jobs = $this->jobService->listForEmployer($request->user(), (int) $request->get('per_page', 15));
 
-        return response()->json(['jobs' => JobResource::collection($jobs)]);
+        return response()->json(JobResource::collection($jobs)->response()->getData(true));
     }
 }

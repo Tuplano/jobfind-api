@@ -16,7 +16,7 @@ class UserController extends Controller
             ->when($request->role, fn ($q, $role) => $q->where('role', $role))
             ->when($request->search, fn ($q, $s) => $q->where('email', 'like', "%{$s}%"))
             ->latest()
-            ->paginate(20);
+            ->paginate((int) $request->get('per_page', 15));
 
         return response()->json(UserResource::collection($users)->response()->getData(true));
     }

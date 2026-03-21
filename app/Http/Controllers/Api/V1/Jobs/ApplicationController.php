@@ -27,7 +27,7 @@ class ApplicationController extends Controller
 
     public function myApplications(Request $request): JsonResponse
     {
-        $applications = $this->applicationService->getForEmployee($request->user());
+        $applications = $this->applicationService->getForEmployee($request->user(), (int) $request->get('per_page', 15));
 
         return response()->json(
             ApplicationResource::collection($applications)->response()->getData(true)
@@ -38,7 +38,7 @@ class ApplicationController extends Controller
     {
         $this->authorize('view', $job);
 
-        $applications = $this->applicationService->getForJob($job);
+        $applications = $this->applicationService->getForJob($job, (int) $request->get('per_page', 15));
 
         return response()->json(
             ApplicationResource::collection($applications)->response()->getData(true)

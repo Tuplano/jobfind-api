@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\JobController as AdminJobController;
+use App\Http\Controllers\Api\V1\Admin\SkillController as AdminSkillController;
+use App\Http\Controllers\Api\V1\Admin\StatsController as AdminStatsController;
 use App\Http\Controllers\Api\V1\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerifyEmailController;
@@ -7,6 +10,7 @@ use App\Http\Controllers\Api\V1\Employee\ProfileController as EmployeeProfileCon
 use App\Http\Controllers\Api\V1\Employer\ProfileController as EmployerProfileController;
 use App\Http\Controllers\Api\V1\Jobs\ApplicationController;
 use App\Http\Controllers\Api\V1\Jobs\JobController;
+use App\Http\Controllers\Api\V1\SkillController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +39,9 @@ Route::prefix('v1')->group(function () {
     // Public job browsing
     Route::get('jobs',      [JobController::class, 'index']);
     Route::get('jobs/{job}', [JobController::class, 'show']);
+
+    Route::get('skills', [SkillController::class, 'index']);
+    Route::middleware('auth:sanctum')->post('skills', [SkillController::class, 'store']);
 
     // ── Authenticated ────────────────────────────────────────────────────────
     Route::middleware('auth:sanctum')->group(function () {
@@ -71,10 +78,20 @@ Route::prefix('v1')->group(function () {
 
         // Admin routes
         Route::prefix('admin')->middleware('role:admin')->group(function () {
+            Route::get('stats', AdminStatsController::class);
+
             Route::get('users',               [AdminUserController::class, 'index']);
             Route::get('users/{user}',        [AdminUserController::class, 'show']);
             Route::patch('users/{user}/toggle-active', [AdminUserController::class, 'toggleActive']);
             Route::delete('users/{user}',     [AdminUserController::class, 'destroy']);
+
+            Route::get('jobs',                [AdminJobController::class, 'index']);
+            Route::delete('jobs/{job}',       [AdminJobController::class, 'destroy']);
+
+            Route::get('skills',              [AdminSkillController::class, 'index']);
+            Route::post('skills',             [AdminSkillController::class, 'store']);
+            Route::patch('skills/{skill}',    [AdminSkillController::class, 'update']);
+            Route::delete('skills/{skill}',   [AdminSkillController::class, 'destroy']);
         });
     });
 });

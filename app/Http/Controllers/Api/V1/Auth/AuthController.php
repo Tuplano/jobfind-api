@@ -29,7 +29,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $data  = $request->validated();
-        $user  = $this->authService->login($data, $data['role']);
+        $user  = $this->authService->login($data);
         $token = $this->authService->createToken($user);
 
         return response()->json([

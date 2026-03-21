@@ -18,7 +18,7 @@ class LoginRequest extends FormRequest
         return [
             'email'    => ['required', 'email'],
             'password' => ['required', 'string'],
-            'role'     => ['required', new Enum(UserRole::class)],
+            'role'     => ['sometimes', new Enum(UserRole::class)],
         ];
     }
 }

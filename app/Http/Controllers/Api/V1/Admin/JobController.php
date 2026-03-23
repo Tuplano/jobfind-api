@@ -18,7 +18,7 @@ class JobController extends Controller
             ->latest()
             ->paginate((int) $request->get('per_page', 15));
 
-        return response()->json(JobResource::collection($jobs)->response()->getData(true));
+        return response()->json($jobs->through(fn ($job) => (new JobResource($job))->resolve()));
     }
 
     public function destroy(Job $job): JsonResponse

@@ -18,7 +18,7 @@ class UserController extends Controller
             ->latest()
             ->paginate((int) $request->get('per_page', 15));
 
-        return response()->json(UserResource::collection($users)->response()->getData(true));
+        return response()->json($users->through(fn ($user) => (new UserResource($user))->resolve()));
     }
 
     public function show(User $user): JsonResponse

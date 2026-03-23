@@ -22,7 +22,7 @@ class JobController extends Controller
             (int) $request->get('per_page', 15)
         );
 
-        return response()->json(JobResource::collection($jobs)->response()->getData(true));
+        return response()->json($jobs->through(fn ($job) => (new JobResource($job))->resolve()));
     }
 
     public function show(Job $job): JsonResponse
@@ -67,6 +67,6 @@ class JobController extends Controller
     {
         $jobs = $this->jobService->listForEmployer($request->user(), (int) $request->get('per_page', 15));
 
-        return response()->json(JobResource::collection($jobs)->response()->getData(true));
+        return response()->json($jobs->through(fn ($job) => (new JobResource($job))->resolve()));
     }
 }

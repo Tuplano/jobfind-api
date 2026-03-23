@@ -30,7 +30,7 @@ class ApplicationController extends Controller
         $applications = $this->applicationService->getForEmployee($request->user(), (int) $request->get('per_page', 15));
 
         return response()->json(
-            ApplicationResource::collection($applications)->response()->getData(true)
+            $applications->through(fn ($app) => (new ApplicationResource($app))->resolve())
         );
     }
 
@@ -41,7 +41,7 @@ class ApplicationController extends Controller
         $applications = $this->applicationService->getForJob($job, (int) $request->get('per_page', 15));
 
         return response()->json(
-            ApplicationResource::collection($applications)->response()->getData(true)
+            $applications->through(fn ($app) => (new ApplicationResource($app))->resolve())
         );
     }
 
